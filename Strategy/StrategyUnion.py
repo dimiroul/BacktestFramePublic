@@ -80,7 +80,7 @@ class PseudoStrategyUnit(Subject, PriceHandler, BarHandler, FillHandler, ClearHa
                              multiplier_=multiplier_, margin_rate_=margin_rate_, currency_=currency_)
 
     @abstractmethod
-    def put_signals(self):
+    def put_signals(self) -> None:
         """
         强制继承PseudoStrategyUnit类的子类实现put_signals方法
         回测框架使用的交易策略单位模块，应该至少实现一种生成信号（Signal）的方法

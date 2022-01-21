@@ -1,4 +1,4 @@
-from abc import (ABCMeta, abstractmethod)
+from abc import (ABCMeta)
 from BaseType.Const import CONST
 from pandas.tseries.offsets import DateOffset
 from pandas import Timestamp

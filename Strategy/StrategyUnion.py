@@ -1,5 +1,4 @@
 from BaseType.Subject import Subject
-# import Event.Event as Event
 from Event.Event import Event
 from Event.EventHandler import (BarHandler, PriceHandler, FillHandler, ClearHandler, ENDHandler)
 from Event.EventQueue import EVENT_QUEUE

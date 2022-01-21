@@ -2,8 +2,6 @@ from BaseType.CashFlow import CashFlow
 from BaseType.ExchangeRate import (amount_to_cny, amount_from_cny)
 from collections import defaultdict
 from typing import Optional
-# import Event.Event as Event
-from Event.Event import Event
 import Infomation.Info as Info
 import uuid
 
@@ -132,4 +130,3 @@ class Wallet(object):
 
         amount_ = cash_flow_.to_cny()
         self.cash_available -= (amount_ * fill.direction)
-

@@ -1,14 +1,11 @@
 from BaseType.Subject import Subject
-# import Event.Event as Event
 from Event.Event import Event
 from Event.EventHandler import (PriceHandler, SignalHandler, FillHandler, ClearHandler, ENDHandler)
 from Event.EventQueue import EVENT_QUEUE
-# from Event.EventLogger import EVENT_LOGGER
 from pandas.tseries.offsets import DateOffset
 from Logger.Logger import LoggerStringUnit
 from BaseType.Const import CONST
 from collections import defaultdict
-# from Portfolio.BidSignalQueue import (BidSignal, BidSignalQueue, SIGNAL_MAP_ORDER)
 from Portfolio.BidSignalQueue import BidSignalQueue
 from Infomation.Info import SIGNAL_MAP_ORDER
 import uuid
@@ -45,24 +42,6 @@ class PortfolioInfo(Info.Info):
         return (
             "{:2f},{:2f},{:2f},{:2f},{:2f},{:2f},{:4f}"
         ).format(self.cash, self.amount, self.asset, self.debt, self.net_asset, self.share, self.net_price)
-
-# 自2022/01/11起失效
-# class PortfolioLoggerUnit(LoggerUnit):
-#
-#     columns = ["committer", "datetime", "cash", "amount", "asset", "debt", "net_asset", "share", "net_price"]
-#
-#     def log(self, obj, committer: str):
-#         self.data = self.data.append({
-#             "committer": committer,
-#             "datetime": obj.last_datetime,
-#             "cash": obj.cash,
-#             "amount": obj.amount,
-#             "asset": obj.asset,
-#             "debt": obj.debt,
-#             "net_asset": obj.net_asset,
-#             "share": obj.share,
-#             "net_price": obj.net_price
-#             }, ignore_index=True)
 
 
 # 定义PORTFOLIO_LOGGER为回测框架使用的投资组合记录模块，作为全局变量
@@ -182,13 +161,6 @@ class PseudoHoldingUnit(Subject, PriceHandler, FillHandler):
         self.refresh()
 
 
-# 自2022/01/11起失效
-# def create_bid_signal(signal: Event.SignalEvent, holding: PseudoHoldingUnit) -> BidSignal:
-#     return BidSignal(uid_=signal.uid, symbol_=signal.symbol, price_=signal.price, volume_=signal.volume,
-#                      amount_=holding.volume_to_amount(volume_=signal.volume, price_=signal.price, direction_=1),
-#                      type_=signal.signal_type, open_or_close_=signal.open_or_close)
-
-
 class HoldingUnion(PriceHandler, SignalHandler, FillHandler, ClearHandler, ENDHandler):
     """
     HoldingUnion(PriceHandler, SignalHandler, FillHandler, ClearHandler, ENDHandler)：
@@ -251,9 +223,6 @@ class HoldingUnion(PriceHandler, SignalHandler, FillHandler, ClearHandler, ENDHa
         @return(None)
         """
 
-        # self.cash = self.cash_available + sum(self.cash_frozen.values())
-        # print("{:.2f} {:.2f}".format(self.cash, self.wallet.get_total()))
-
         # 现金余额为现金管理模块中以人民币（CNY）为单位的现金余额
         self.cash = self.wallet.get_total()
 
@@ -312,8 +281,6 @@ class HoldingUnion(PriceHandler, SignalHandler, FillHandler, ClearHandler, ENDHa
         @currency_(str)：货币代码，默认为CNY
         @return(None)
         """
-        # if amount_ >= 0:
-        #     self.cash_available += amount_
 
         flow = CashFlow(currency_=currency_, amount_=amount_)
         self.wallet.input(cash_flow_=flow)
@@ -341,11 +308,6 @@ class HoldingUnion(PriceHandler, SignalHandler, FillHandler, ClearHandler, ENDHa
             self.share -= round(amount_from_cny(currency_=currency_, amount_=amount_) / self.net_price, 2)
         return flow
 
-        # if 0 < amount_ <= self.cash_available:
-        #     self.cash_available -= amount_
-        #     self.share -= round(amount_ / self.net_price, 2)
-        #     # PORTFOLIO_LOGGER.log(obj=self, committer=self._name)
-
     def redeem_share(self, share_: float, currency_: str = "CNY") -> Optional[CashFlow]:
         """
         redeem_share：从当前投资组合中赎回给定份额，并以给定货币为单位
@@ -362,11 +324,6 @@ class HoldingUnion(PriceHandler, SignalHandler, FillHandler, ClearHandler, ENDHa
             self.share -= share_
         return cashflow_exchange(cash_flow_=flow, currency_=currency_)
 
-        # if 0 < share_ * self.net_price <= self.cash_available:
-        #     self.cash_available -= (share_ * self.net_price)
-        #     self.share = round(self.share - share_, 2)
-        #     # PORTFOLIO_LOGGER.log(obj=self, committer=self._name)
-
     def borrow(self, amount_: float, currency_: str = "CNY") -> None:
         """
         borrow：投资组合借入给定金额的给定货币的现金
@@ -374,9 +331,6 @@ class HoldingUnion(PriceHandler, SignalHandler, FillHandler, ClearHandler, ENDHa
         @currency_(str)：货币代码，默认为CNY
         @return(None)
         """
-        # if amount_ > 0:
-        #     self.cash_available += amount_
-        #     self.debt += amount_
 
         flow = CashFlow(currency_=currency_, amount_=amount_)
         self.wallet.input(cash_flow_=flow)
@@ -398,10 +352,6 @@ class HoldingUnion(PriceHandler, SignalHandler, FillHandler, ClearHandler, ENDHa
         if flow is not None:
             self.debt -= amount_from_cny(currency_=currency_, amount_=amount_)
         return flow
-
-        # if 0 < amount_ <= self.cash_available:
-        #     self.cash_available -= amount_
-        #     self.debt -= amount_
 
     def register(self, holding: PseudoHoldingUnit) -> None:
         """
@@ -455,9 +405,6 @@ class HoldingUnion(PriceHandler, SignalHandler, FillHandler, ClearHandler, ENDHa
         @return(None)
         """
 
-        # if (uid_, symbol_) in self.cash_frozen.keys():
-        #     self.cash_available += self.cash_frozen.pop((uid_, symbol_))
-
         # 根据给定的委托ID、标的代码，释放对应的冻结资金
         self.wallet.release(uid_=uid_, symbol_=symbol_)
 
@@ -488,24 +435,11 @@ class HoldingUnion(PriceHandler, SignalHandler, FillHandler, ClearHandler, ENDHa
 
         self.active_symbols[symbol_].clear()
 
-    # def process_partial_fill(self, fill: Event.FillEvent, amount_: float):
-    #     if fill.direction == 1 and (fill.uid, fill.symbol) in self.cash_frozen:
-    #         self.cash_frozen[(fill.uid, fill.symbol)] -= amount_
-    #     else:
-    #         self.cash_available -= (amount_ * fill.direction)
-    #
-    # def process_full_fill(self, fill: Event.FillEvent, amount_: float):
-    #     self.cash_available -= (amount_ * fill.direction)
-    #
-    #     self.cancel(uid_=fill.uid, symbol_=fill.symbol)
-
     def cancel_all(self) -> None:
         """
         cancel_all：撤回当前投资组合的所有交易委托
         @return(None)
         """
-        # self.cash_available += sum(self.cash_frozen.values())
-        # self.cash_frozen = defaultdict(float)
 
         # 释放所有冻结资金
         self.wallet.release_all()
@@ -533,8 +467,6 @@ class HoldingUnion(PriceHandler, SignalHandler, FillHandler, ClearHandler, ENDHa
 
         fill: Info.FillInfo = event.info
 
-        # EVENT_LOGGER.log(event=event, log_type=event.type, committer=self._name)
-
         self.last_datetime = fill.datetime
 
         # 如果标的代码（symbol）未注册，且Fill事件为买入开仓委托成交，则通过事件中的FillInfo生成单位持仓模块并注册
@@ -550,16 +482,8 @@ class HoldingUnion(PriceHandler, SignalHandler, FillHandler, ClearHandler, ENDHa
         # 获取标的代码（symbol）对应的单位持仓模块
         holding = self.get_holding(symbol_=fill.symbol)
 
-        # amount_ = holding.volume_to_amount(volume_=fill.volume, price_=fill.filled_price, direction_=fill.direction)
-        # flow = CashFlow(currency_="CNY", amount_=amount_)
-
         # 根据给定单位持仓模块和事件中的FillInfo，计算成交所涉及的现金变动
         flow = holding.volume_to_cash_flow(volume_=fill.volume, price_=fill.filled_price, direction_=fill.direction)
-
-        # if fill.partial:
-        #     self.process_partial_fill(fill=fill, amount_=amount_)
-        # else:
-        #     self.process_full_fill(fill=fill, amount_=amount_)
 
         # 根据委托成交是部分成交/完全成交，分别处理现金变动
         if fill.partial:
@@ -569,23 +493,6 @@ class HoldingUnion(PriceHandler, SignalHandler, FillHandler, ClearHandler, ENDHa
         else:
             self.wallet.process_full_fill(fill=fill, cash_flow_=flow)
             self.cancel(uid_=fill.uid, symbol_=fill.symbol)
-
-        # self.refresh()
-        # PORTFOLIO_LOGGER.log(obj=self, committer=self._name)
-
-    # 自2022/01/11起失效
-    # def put_bid_order(self, symbol_: str, open_or_close_: int, uid_: uuid.UUID, type_: str,
-    #                   price_: float, volume_: float, amount_: float):
-    #     self.time_offset()
-    #     EVENT_QUEUE.put(Event.OrderEvent(symbol_=symbol_, datetime_=self.last_datetime,
-    #                                      direction_=1, open_or_close_=open_or_close_,
-    #                                      price_=price_, volume_=volume_, uid_=uid_,
-    #                                      order_type_=SIGNAL_MAP_ORDER[type_]))
-    #     # self.cash_available -= amount_
-    #     # self.cash_frozen[(uid_, symbol_)] += amount_
-    #     self.wallet.freeze(uid_=uid_, symbol_=symbol_, currency_="CNY", amount_=amount_)
-    #     self.active_orders[uid_].add(symbol_)
-    #     self.active_symbols[symbol_].add(uid_)
 
     def put_bid_order(self, order: Info.OrderInfo, amount_: float) -> None:
         """
@@ -599,43 +506,10 @@ class HoldingUnion(PriceHandler, SignalHandler, FillHandler, ClearHandler, ENDHa
         self.time_offset()
         EVENT_QUEUE.put(Event(type_="Order", datetime_=self.last_datetime, info_=order))
 
-        # self.cash_available -= amount_
-        # self.cash_frozen[(uid_, symbol_)] += amount_
-
         # 按照买入委托预计占用的金额冻结资金
         self.wallet.freeze(uid_=order.uid, symbol_=order.symbol, currency_="CNY", amount_=amount_)
         self.active_orders[order.uid].add(order.symbol)
         self.active_symbols[order.symbol].add(order.uid)
-
-    # 自2022/01/11起失效
-    # def process_bid_signal(self, signal: Event.SignalEvent, holding: PseudoHoldingUnit):
-    #
-    #     tmp_volume = holding.amount_to_volume(amount_=self.wallet.cash_available, price_=signal.price, direction_=1)
-    #
-    #     if tmp_volume >= signal.volume:
-    #         tmp_amount = holding.volume_to_amount(volume_=signal.volume, price_=signal.price, direction_=1)
-    #         self.put_bid_order(symbol_=signal.symbol, open_or_close_=signal.open_or_close,
-    #                            uid_=signal.uid, type_=signal.signal_type,
-    #                            price_=signal.price, volume_=signal.volume, amount_=tmp_amount)
-    #
-    #         rest_volume = 0
-    #
-    #     elif tmp_volume > 0 and signal.signal_type in {"TBF", "IOC"}:
-    #         tmp_amount = holding.volume_to_amount(volume_=tmp_volume, price_=signal.price, direction_=1)
-    #         self.put_bid_order(symbol_=signal.symbol, open_or_close_=signal.open_or_close,
-    #                            uid_=signal.uid, type_=signal.signal_type,
-    #                            price_=signal.price, volume_=tmp_volume, amount_=tmp_amount)
-    #
-    #         rest_volume = signal.volume - tmp_volume
-    #
-    #     else:
-    #         rest_volume = signal.volume
-    #
-    #     if rest_volume > 0 and signal.signal_type in {"TBF", "FOW"}:
-    #         rest_amount = holding.volume_to_amount(volume_=rest_volume, price_=signal.price, direction_=1)
-    #         self.bid_queue.put(BidSignal(uid_=signal.uid, symbol_=signal.symbol, price_=signal.price,
-    #                                      volume_=rest_volume, amount_=rest_amount,
-    #                                      type_=signal.signal_type, open_or_close_=signal.open_or_close))
 
     def process_bid_signal(self, signal: Info.SignalInfo, holding: PseudoHoldingUnit) -> None:
         """
@@ -685,32 +559,6 @@ class HoldingUnion(PriceHandler, SignalHandler, FillHandler, ClearHandler, ENDHa
                 signal.amount = holding.volume_to_amount(volume_=rest_volume, price_=signal.price, direction_=1)
 
             self.bid_queue.put(signal)
-
-    # 自2022/01/11起失效
-    # def process_bid_signal_queue(self):
-    #
-    #     while not self.bid_queue.is_empty() and self.wallet.cash_available >= self.bid_queue.heap[0].amount:
-    #         tmp_signal = self.bid_queue.pop()
-    #         self.put_bid_order(symbol_=tmp_signal.symbol, open_or_close_=tmp_signal.open_or_close,
-    #                            uid_=tmp_signal.uid, type_=tmp_signal.type, price_=tmp_signal.price,
-    #                            volume_=tmp_signal.volume, amount_=tmp_signal.amount)
-    #
-    #     if self.bid_queue.is_empty():
-    #         return
-    #
-    #     tmp_signal = self.bid_queue.first()
-    #     holding = self.get_holding(symbol_=tmp_signal.symbol)
-    #
-    #     tmp_volume = holding.amount_to_volume(amount_=self.wallet.cash_available, price_=tmp_signal.price, direction_=1)
-    #
-    #     if tmp_volume > 0 and tmp_signal.type == "TBF":
-    #         tmp_amount = holding.volume_to_amount(volume_=tmp_volume, price_=tmp_signal.price, direction_=1)
-    #         self.put_bid_order(symbol_=tmp_signal.symbol, open_or_close_=tmp_signal.open_or_close,
-    #                            uid_=tmp_signal.uid, type_=tmp_signal.type, price_=tmp_signal.price,
-    #                            volume_=tmp_volume, amount_=tmp_amount)
-    #
-    #         self.bid_queue.heap[0].volume -= tmp_volume
-    #         self.bid_queue.heap[0].amount -= tmp_amount
 
     def process_bid_signal_queue(self) -> None:
         """
@@ -788,8 +636,6 @@ class HoldingUnion(PriceHandler, SignalHandler, FillHandler, ClearHandler, ENDHa
         """
 
         signal: Info.SignalInfo = event.info
-
-        # EVENT_LOGGER.log(event=event, log_type=event.type, committer=self._name)
 
         self.last_datetime = signal.datetime
 

@@ -1,40 +1,6 @@
-# from Event.Event import OrderEvent
 import uuid
 from BaseType.PriorityQueue import PriorityQueue
 from Infomation.Info import OrderInfo
-
-
-# 自2022/01/11起失效
-# class Order:
-#
-#     __slots__ = ["uid", "direction", "open_or_close", "price", "volume", "valid"]
-#
-#     def __init__(self, oe: OrderEvent = None):
-#         if oe is not None:
-#             self.uid = oe.uid
-#             self.direction = oe.direction
-#             self.open_or_close = oe.open_or_close
-#             self.price = oe.price
-#             self.volume = oe.volume
-#             self.valid = True
-#         else:
-#             self.valid = False
-#
-#     def __gt__(self, other):
-#         if self.direction != other.direction:
-#             raise RuntimeWarning("Different direction")
-#         elif self.direction == 1:
-#             return self.price > other.price
-#         else:
-#             return self.price < other.price
-#
-#     def __repr__(self):
-#         return "uid: {:s}: {:s}{:s}, price: {:.2f}, volume: {:.2f}".format(
-#             str(self.uid),
-#             "买入" if self.direction == 1 else "卖出",
-#             "开仓" if self.open_or_close == 1 else "平仓",
-#             self.price, self.volume
-#         )
 
 
 class OrderQueue(PriorityQueue):

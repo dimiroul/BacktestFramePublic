@@ -1,11 +1,9 @@
 from BaseType.Subject import Subject
-# import Event.Event as Event
 from Event.Event import Event
 from Event.EventHandler import (BarHandler, PriceHandler, OrderHandler, CancelHandler, ClearHandler, ENDHandler)
 from Event.EventQueue import EVENT_QUEUE
 from Exchange.OrderQueue import OrderQueue
 from pandas.tseries.offsets import DateOffset
-# from Event.EventLogger import EVENT_LOGGER
 from BaseType.Const import CONST
 import Infomation.Info as Info
 
@@ -225,13 +223,6 @@ class PseudoExchangeUnit(Subject, BarHandler, PriceHandler, OrderHandler, Cancel
         self.bid_queue = OrderQueue(self.symbol, "买入")
         self.ask_queue = OrderQueue(self.symbol, "卖出")
 
-        # if order is not None:
-        #     tmp_order = Order(order)
-        #     if tmp_order.direction == 1:
-        #         self.bid_queue.put(tmp_order)
-        #     else:
-        #         self.ask_queue.put(tmp_order)
-
         # 如果提供了Order信息，则将Order信息放入委托撮合队列
         if order is not None:
             if order.direction == 1:
@@ -244,40 +235,6 @@ class PseudoExchangeUnit(Subject, BarHandler, PriceHandler, OrderHandler, Cancel
         cross：当前交易模块进行交易撮合，成交结果作为Fill事件放入事件队列
         @return(None)
         """
-
-        # if self.crt_price != 0 and self.crt_price < self.last_price:
-        #     # tmp_order: Order = self.bid_queue.first()
-        #     # while tmp_order.valid and tmp_order.price >= self.crt_price:
-        #     #     self.time_offset()
-        #     #     EVENT_QUEUE.put(Event.FillEvent(uid_=tmp_order.uid, symbol_=self.symbol, datetime_=self.last_datetime,
-        #     #                                     direction_=tmp_order.direction, open_or_close_=tmp_order.open_or_close,
-        #     #                                     filled_price_=tmp_order.price, volume_=tmp_order.volume))
-        #     #     self.bid_queue.pop()
-        #     #     tmp_order: Order = self.bid_queue.first()
-        #
-        #     while not self.bid_queue.is_empty() and self.bid_queue.heap[0].price >= self.crt_price:
-        #         self.time_offset()
-        #         tmp_order: Order = self.bid_queue.pop()
-        #         EVENT_QUEUE.put(Event.FillEvent(uid_=tmp_order.uid, symbol_=self.symbol, datetime_=self.last_datetime,
-        #                                         direction_=tmp_order.direction, open_or_close_=tmp_order.open_or_close,
-        #                                         filled_price_=tmp_order.price, volume_=tmp_order.volume))
-        #
-        # if self.crt_price != 0 and self.crt_price > self.last_price:
-        #     # tmp_order: Order = self.ask_queue.first()
-        #     # while tmp_order.valid and tmp_order.price <= self.crt_price:
-        #     #     self.time_offset()
-        #     #     EVENT_QUEUE.put(Event.FillEvent(uid_=tmp_order.uid, symbol_=self.symbol, datetime_=self.last_datetime,
-        #     #                                     direction_=tmp_order.direction, open_or_close_=tmp_order.open_or_close,
-        #     #                                     filled_price_=tmp_order.price, volume_=tmp_order.volume))
-        #     #     self.ask_queue.pop()
-        #     #     tmp_order: Order = self.ask_queue.first()
-        #
-        #     while not self.ask_queue.is_empty() and self.ask_queue.heap[0].price <= self.crt_price:
-        #         self.time_offset()
-        #         tmp_order: Order = self.ask_queue.pop()
-        #         EVENT_QUEUE.put(Event.FillEvent(uid_=tmp_order.uid, symbol_=self.symbol, datetime_=self.last_datetime,
-        #                                         direction_=tmp_order.direction, open_or_close_=tmp_order.open_or_close,
-        #                                         filled_price_=tmp_order.price, volume_=tmp_order.volume))
 
         # 如果没有现价（crt_price）数据，则不进行撮合
         if self.crt_price == 0:
@@ -303,10 +260,8 @@ class PseudoExchangeUnit(Subject, BarHandler, PriceHandler, OrderHandler, Cancel
         @event(Event)：接收的Bar事件
         @return(None)
         """
-        # EVENT_LOGGER.log(obj=order, committer=self._name, date_time_=self.last_datetime)
 
         bar: Info.BarInfo = event.info
-        # EVENT_LOGGER.log(obj=bar, committer=self._name, date_time_=self.last_datetime)
 
         self.last_datetime = bar.datetime
         self.last_bar = bar
@@ -321,10 +276,8 @@ class PseudoExchangeUnit(Subject, BarHandler, PriceHandler, OrderHandler, Cancel
         @event(Event)：接收的Price事件
         @return(None)
         """
-        # EVENT_LOGGER.log(event, event.type, self._name)
 
         price: Info.PriceInfo = event.info
-        # EVENT_LOGGER.log(obj=price, committer=self._name, date_time_=self.last_datetime)
 
         self.last_datetime = price.datetime
         self.last_price = self.crt_price
@@ -339,10 +292,8 @@ class PseudoExchangeUnit(Subject, BarHandler, PriceHandler, OrderHandler, Cancel
         @event(Event)：接收的Order事件
         @return(None)
         """
-        # EVENT_LOGGER.log(event, event.type, self._name)
 
         order: Info.OrderInfo = event.info
-        # EVENT_LOGGER.log(obj=order, committer=self._name, date_time_=self.last_datetime)
 
         self.last_datetime = order.datetime
 
@@ -365,10 +316,8 @@ class PseudoExchangeUnit(Subject, BarHandler, PriceHandler, OrderHandler, Cancel
         @event(Event)：接收的Cancel事件
         @return(None)
         """
-        # EVENT_LOGGER.log(event, event.type, self._name)
 
         cancel: Info.CancelInfo = event.info
-        # EVENT_LOGGER.log(obj=cancel, committer=self._name, date_time_=self.last_datetime)
 
         # 根据Cancel事件中包含的交易委托ID，从交易委托队列中撤回对应委托
         self.last_datetime = cancel.datetime
@@ -540,13 +489,6 @@ class ExchangeUnion(BarHandler, PriceHandler, OrderHandler, CancelHandler, Clear
         @event(Event)：接收的END事件
         @return(None)
         """
-
-        # for symbol in self.units.keys():
-        #     self.handlers[(symbol, "END")](event)
-
-        # if self.last_datetime is not None:
-        #     self.last_datetime += DateOffset(minutes=60)
-        #     EVENT_QUEUE.put(Event(type_="Clear", datetime_=self.last_datetime))
 
         # 向事件队列放入当前易日的Clear事件
         self.last_datetime += DateOffset(minutes=60)

@@ -11,7 +11,7 @@ import time
 # HANDLER_TYPE(Event -> None)：对于事件处理接口所实现的函数类型的定义
 HANDLER_TYPE = Callable[[Event], None]
 
-# 忽略记录的事件标签
+# IGNORE_LIST：忽略记录的事件标签
 IGNORE_LIST = {"Price"}
 
 

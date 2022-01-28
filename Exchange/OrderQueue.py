@@ -1,6 +1,6 @@
 import uuid
 from BaseType.PriorityQueue import PriorityQueue
-from Infomation.Info import OrderInfo
+from Information.Info import OrderInfo
 
 
 class OrderQueue(PriorityQueue):

@@ -2,7 +2,7 @@ from abc import (ABCMeta, abstractmethod)
 import uuid
 from BaseType.Const import CONST
 from collections import defaultdict
-from Infomation.Info import (Info, NullInfo)
+from Information.Info import (Info, NullInfo)
 
 # EVENT_PRIORITY：记录各类事件的优先级别的全局变量，值越大优先级越高，默认值为0
 EVENT_PRIORITY = defaultdict(int)

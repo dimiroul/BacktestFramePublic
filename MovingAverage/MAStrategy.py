@@ -1,8 +1,8 @@
 from Event.Event import Event
 from Event.EventQueue import EVENT_QUEUE
-from Strategy.StrategyUnion import PseudoStrategyUnit
+from Strategy.Strategy import PseudoStrategyUnit
 from BaseType.Const import CONST
-import Infomation.Info as Info
+import Information.Info as Info
 from Logger.Logger import LoggerStringUnit
 
 # 定义默认使用5日、20日移动平均值
@@ -41,6 +41,7 @@ class MAInfo(Info.Info):
         ).format(self.crt_price, self.short_ma, self.long_ma, self.crt_direction)
 
 
+# 定义STRATEGY_LOGGER为类LoggerStringUnit的实例，是移动均线策略使用的记录模块，作为全局变量
 STRATEGY_LOGGER = LoggerStringUnit(head_="crt_price,short_ma,long_ma,crt_direction")
 
 

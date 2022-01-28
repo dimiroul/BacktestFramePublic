@@ -4,7 +4,7 @@ from typing import Optional
 
 class CashFlow:
     """
-    回测框架中用于表示现金流（cashflow）数据的类
+    CashFlow：回测框架中用于表示现金流（cashflow）数据的类
     """
 
     def __init__(self, currency_: str, amount_: float):
@@ -33,6 +33,10 @@ class CashFlow:
         return self.__float__()
 
     def __gt__(self, other):
+        """
+        比较两笔现金流结汇所得的人民币（CNY）金额
+        """
+
         return self.__float__() > other.__float__()
 
     def __lt__(self, other):

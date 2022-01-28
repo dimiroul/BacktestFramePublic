@@ -27,7 +27,7 @@ class DataHandler:
         """
         强制要求子类实现bar_iterator()方法
         bar_iterator：将处理输入数据得到的Bar事件装入迭代器（Iterator）并返回
-        return(Iterator)：包含处理输入数据得到的Bar事件的迭代器
+        @return(Iterator)：包含处理输入数据得到的Bar事件的迭代器
         """
 
         raise NotImplementedError("publish_bar_iterator not implemented")

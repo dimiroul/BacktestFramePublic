@@ -5,7 +5,7 @@ from Event.EventQueue import EVENT_QUEUE
 from Exchange.OrderQueue import OrderQueue
 from pandas.tseries.offsets import DateOffset
 from BaseType.Const import CONST
-import Infomation.Info as Info
+import Information.Info as Info
 
 
 def day_bar_slicer(bar: Info.BarInfo):
@@ -369,6 +369,7 @@ class ExchangeUnion(BarHandler, PriceHandler, OrderHandler, CancelHandler, Clear
         @factory_(单位交易模块初始化方法)：继承PseudoExchangeUnit类的自定义单位交易模块，默认为PseudoExchangeUnit
         """
 
+        # 在EVENT_QUEUE中注册交易所（Exchange）体系中的事件处理方法
         EVENT_QUEUE.register("Bar", self.on_bar)
         EVENT_QUEUE.register("Price", self.on_price)
         EVENT_QUEUE.register("Order", self.on_order)

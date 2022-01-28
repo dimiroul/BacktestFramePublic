@@ -7,11 +7,11 @@ from Logger.Logger import LoggerStringUnit
 from BaseType.Const import CONST
 from collections import defaultdict
 from Portfolio.BidSignalQueue import BidSignalQueue
-from Infomation.Info import SIGNAL_MAP_ORDER
+from Information.Info import SIGNAL_MAP_ORDER
 import uuid
 from BaseType.CashFlow import (CashFlow, cashflow_exchange)
 from Portfolio.Wallet import Wallet
-import Infomation.Info as Info
+import Information.Info as Info
 from typing import Optional
 from BaseType.ExchangeRate import amount_from_cny
 
@@ -26,6 +26,16 @@ class PortfolioInfo(Info.Info):
 
     def __init__(self, cash_: float, amount_: float, asset_: float, debt_: float,
                  net_asset_: float, share_: float, net_price_: float):
+        """
+        @cash_(float)：现金余额
+        @amount_(float)：持仓总额
+        @asset_(float)：总资产
+        @debt_(float)：总负债
+        @net_asset_(float)：净资产
+        @share_(float)：当前份额
+        @net_price_(float)：当前净值
+        """
+
         self.cash = cash_
         self.amount = amount_
         self.asset = asset_
@@ -150,6 +160,7 @@ class PseudoHoldingUnit(Subject, PriceHandler, FillHandler):
         self.last_datetime = fill.datetime
         self.crt_price = fill.filled_price
 
+        # 更新加权成本价和持仓数量
         tmp_volume = self.volume + (fill.volume * fill.direction)
         if tmp_volume == 0:
             self.open_price = 0
@@ -179,6 +190,7 @@ class HoldingUnion(PriceHandler, SignalHandler, FillHandler, ClearHandler, ENDHa
         @factory_(单位交易模块初始化方法)：继承PseudoHoldingUnit类的自定义单位交易模块，默认为PseudoHoldingUnit
         """
 
+        # 在EVENT_QUEUE中注册投资组合（Portfolio）体系中的事件处理方法
         EVENT_QUEUE.register("Price", self.on_price)
         EVENT_QUEUE.register("Signal", self.on_signal)
         EVENT_QUEUE.register("Fill", self.on_fill)

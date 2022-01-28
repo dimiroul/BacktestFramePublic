@@ -4,7 +4,7 @@ from Event.EventHandler import (BarHandler, PriceHandler, FillHandler, ClearHand
 from Event.EventQueue import EVENT_QUEUE
 from BaseType.Const import CONST
 from abc import (abstractmethod)
-import Infomation.Info as Info
+import Information.Info as Info
 
 
 class PseudoStrategyUnit(Subject, PriceHandler, BarHandler, FillHandler, ClearHandler, ENDHandler):
@@ -13,6 +13,7 @@ class PseudoStrategyUnit(Subject, PriceHandler, BarHandler, FillHandler, ClearHa
     回测框架中，交易策略（Strategy）体系中使用的以单一策略为单位的交易模块
     可处理事件：Bar、Price、Fill、Clear、END
     除了常规的通过参数进行初始化的方式外，提供了通过FillInfo进行初始化的简化方式
+    可以视为一个抽象类，回测中使用的交易策略可以装入继承这个类的子类中，并实现各种方法
     """
 
     _name = "PseudoStrategyUnit"
@@ -104,6 +105,7 @@ class StrategyUnion(PriceHandler, BarHandler, FillHandler, ClearHandler, ENDHand
         @factory_(单位策略模块初始化方法)：继承PseudoStrategyUnit类的自定义单位策略模块，默认为PseudoStrategyUnit
         """
 
+        # 在EVENT_QUEUE中注册交易策略（Strategy）体系中的事件处理方法
         EVENT_QUEUE.register("Price", self.on_price)
         EVENT_QUEUE.register("Bar", self.on_bar)
         EVENT_QUEUE.register("Fill", self.on_fill)

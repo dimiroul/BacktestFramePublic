@@ -5,7 +5,7 @@ from collections import defaultdict
 
 class Info:
     """
-    回测框架中使用的信息类的基类，此类为抽象类
+    Info：回测框架中使用的信息类的基类，此类为抽象类
     """
 
     __metaclass__ = ABCMeta
@@ -209,7 +209,7 @@ SIGNAL_MAP_ORDER["TBF"] = "TBF"
 
 class OrderInfo(Info):
     """
-    Order信息，用于Order事件中传递由持仓组合（portfolio）发出的委托的相关信息
+    Order信息，用于Order事件中传递由持仓组合（Portfolio）发出的委托的相关信息
     """
 
     type = "Order"
@@ -244,7 +244,8 @@ class OrderInfo(Info):
 
     def get_uuid(self) -> uuid.UUID:
         """
-        获取委托信息的ID
+        get_uuid：获取委托信息的ID
+        @return(uuid.UUID)：委托信息的ID
         """
 
         return self.uid
@@ -305,7 +306,8 @@ class CancelInfo(Info):
 
     def get_uuid(self) -> uuid.UUID:
         """
-        获取撤回委托的ID
+        get_uuid：获取撤回委托的ID
+        @return(uuid.UUID)：撤回委托的ID
         """
 
         return self.uid
@@ -355,7 +357,8 @@ class FillInfo(Info):
 
     def get_uuid(self) -> uuid.UUID:
         """
-        获取成交委托的ID
+        get_uuid：获取成交委托的ID
+        @return(uuid.UUID)：成交委托的ID
         """
 
         return self.uid

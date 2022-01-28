@@ -1,6 +1,6 @@
 import uuid
 from BaseType.PriorityQueue import PriorityQueue
-from Infomation.Info import (SignalInfo)
+from Information.Info import (SignalInfo)
 
 
 class BidSignalQueue(PriorityQueue):

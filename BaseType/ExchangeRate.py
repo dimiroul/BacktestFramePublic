@@ -8,7 +8,7 @@ TO_CNY = dict()
 FROM_CNY["CNY"] = 1
 TO_CNY["CNY"] = 1
 
-# 默认港币（HKD）汇率
+# 设置默认港币（HKD）汇率
 FROM_CNY["HKD"] = 0.82510
 TO_CNY["HKD"] = 0.82490
 

@@ -2,7 +2,7 @@ from BaseType.CashFlow import CashFlow
 from BaseType.ExchangeRate import (amount_to_cny, amount_from_cny)
 from collections import defaultdict
 from typing import Optional
-import Infomation.Info as Info
+import Information.Info as Info
 import uuid
 
 
@@ -21,6 +21,7 @@ class Wallet(object):
     def get_total(self) -> float:
         """
         get_total：获取当前以人民币（CNY）为单位的现金余额，包括可用资金和处于冻结状态的资金
+        @return(float)：当前以人民币（CNY）为单位的现金余额
         """
         return self.cash_available + sum(self.cash_frozen.values())
 

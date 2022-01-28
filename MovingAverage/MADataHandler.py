@@ -1,8 +1,8 @@
-from DataClean.DataHandler import DataHandler
+from DataHandler.DataHandler import DataHandler
 import pandas
 from Event.EventQueue import EVENT_QUEUE
 from Event.Event import Event
-import Infomation.Info as Info
+import Information.Info as Info
 
 
 # DEFAULT_COLUMN为默认的读取数据文件的列
@@ -24,6 +24,10 @@ def series_to_bar(row: pandas.Series) -> Event:
 
 
 class MADataHandler(DataHandler):
+    """
+    MADataHandler(DataHandler)：移动均线策略的输入数据处理模块
+    """
+
     __slots__ = ["symbol", "event_queue", "dataframe"]
 
     def __init__(self):
